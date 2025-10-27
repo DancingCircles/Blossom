@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 / 注册 - Blossom</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <a href="index.html" class="back-home">← 返回首页</a>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Blossom</h1>
+            <p class="auth-subtitle">思想绽放的地方</p>
+
+            <!-- 切换标签 -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">登录</button>
+                <button class="auth-tab" data-tab="register">注册</button>
+            </div>
+
+            <!-- 登录表单 -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" name="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" name="password" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="auth-btn">登录</button>
+                <p class="auth-tip">还没有账号？<a href="#" class="switch-tab" data-tab="register">立即注册</a></p>
+            </form>
+
+            <!-- 注册表单 -->
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-username">用户名</label>
+                    <input type="text" id="register-username" name="username" placeholder="4-20个字符" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">邮箱</label>
+                    <input type="email" id="register-email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" name="password" placeholder="至少6个字符" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">确认密码</label>
+                    <input type="password" id="register-confirm" name="confirm" placeholder="再次输入密码" required>
+                </div>
+                <button type="submit" class="auth-btn">注册</button>
+                <p class="auth-tip">已有账号？<a href="#" class="switch-tab" data-tab="login">立即登录</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
+

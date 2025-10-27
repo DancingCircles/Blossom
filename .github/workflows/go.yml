@@ -1,0 +1,196 @@
+name: Go CI/CD
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # 代码测试和构建
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    services:
+      # MySQL服务
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: web_app
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      
+      # Redis服务
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置Go环境
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: web_app/go.sum
+
+      - name: 安装依赖
+        working-directory: ./web_app
+        run: |
+          go mod download
+          go mod tidy
+          go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: 代码格式检查
+        working-directory: ./web_app
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "Go代码格式不规范，请运行 gofmt -w ."
+            gofmt -l .
+            exit 1
+          fi
+
+      - name: 代码静态分析
+        working-directory: ./web_app
+        run: go vet ./...
+
+      - name: 生成Swagger文档
+        working-directory: ./web_app
+        run: swag init
+
+      - name: 运行单元测试
+        working-directory: ./web_app
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+        env:
+          # 测试环境配置
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+
+      - name: 上传测试覆盖率报告
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./web_app/coverage.out
+          flags: unittests
+          name: codecov-umbrella
+
+      - name: 构建应用
+        working-directory: ./web_app
+        run: |
+          go build -v -o bullbell-server .
+          ls -lh bullbell-server
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: bullbell-server
+          path: web_app/bullbell-server
+          retention-days: 7
+
+  # 代码质量检查
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置Go环境
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: web_app/go.sum
+
+      - name: 运行golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          working-directory: ./web_app
+          args: --timeout=5m
+
+  # 安全扫描
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 运行Gosec安全扫描
+        uses: securego/gosec@master
+        with:
+          args: '-no-fail -fmt json -out gosec-results.json ./web_app/...'
+
+      - name: 上传安全扫描报告
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gosec-results
+          path: gosec-results.json
+          retention-days: 7
+
+  # Docker镜像构建（仅在main分支）
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [test-and-build, code-quality]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 构建Docker镜像
+        working-directory: ./web_app
+        run: |
+          docker build -t bullbell-backend:latest .
+          docker images
+
+  # 前端构建
+  frontend-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置Node.js环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 检查前端文件
+        run: |
+          echo "前端文件列表:"
+          ls -la frontend/
+          
+      - name: 创建前端构建产物
+        run: |
+          mkdir -p frontend/dist
+          cp -r frontend/*.html frontend/css frontend/js frontend/dist/
+          ls -la frontend/dist/
+
+      - name: 上传前端构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          retention-days: 7
+
+

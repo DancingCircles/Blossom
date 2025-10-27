@@ -1,0 +1,38 @@
+app:
+  name: "bullbell_forum"    # 项目名称
+  mode: "prod"              # 模式：production
+  port: 8082                # 端口
+
+log:
+  level: "info"                     # 日志级别: info (生产环境)
+  format: "json"                    # 日志格式: json
+  filename: "logs/web_app.log"      # 主日志文件
+  max_size: 100                     # 单个日志文件最大大小(MB)
+  max_backups: 30                   # 保留旧日志文件数量
+  max_age: 30                       # 保留旧日志天数
+  compress: true                    # 是否压缩旧日志文件
+
+mysql:
+  host: "mysql"              # Docker服务名
+  port: 3306                 # 端口
+  user: "root"               # 用户名
+  password: "123456"         # 密码
+  database: "web_app"        # 数据库
+  max_open_conns: 100        # 最大连接数
+  max_idle_conns: 20         # 最大空闲连接数
+
+redis:
+  host: "redis"              # Docker服务名
+  port: 6379                 # 端口
+  password: ""               # 密码 (如果Redis没有设置密码，请保持为空)
+  database: 0                # 数据库
+  pool_size: 100             # 连接池大小
+
+snowflake:
+  machine_id: 1              # 机器ID (分布式部署时每个实例使用不同的ID，范围：0-1023)
+
+elasticsearch:
+  url: "http://elasticsearch:9200"  # Docker服务名
+  index: "bullbell_topics"           # 索引名称
+  sniff: false                       # 是否开启嗅探 (单节点设置为false)
+

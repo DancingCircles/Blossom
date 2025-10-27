@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>话题详情 - Blossom</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/post.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <a href="index.html" class="back-btn">← 返回</a>
+        <h2 class="page-title">话题详情</h2>
+        <div></div>
+    </nav>
+
+    <main class="detail-container">
+        <!-- 话题详情卡片 -->
+        <article id="topic-detail" class="topic-card">
+            <div class="loading">加载中...</div>
+        </article>
+
+        <!-- 评论区域 -->
+        <section class="comments-section">
+            <h3 class="section-title">
+                评论 (<span id="comment-count">0</span>)
+            </h3>
+
+            <!-- 发表评论表单（登录后显示） -->
+            <div id="comment-form-container" class="comment-form-container" style="display: none;">
+                <form id="comment-form" class="comment-form">
+                    <textarea 
+                        id="comment-input" 
+                        placeholder="说说你的想法..." 
+                        rows="3"
+                        maxlength="1000"
+                        required></textarea>
+                    <div class="comment-form-footer">
+                        <span class="char-count"><span id="comment-char-count">0</span>/1000</span>
+                        <button type="submit" class="btn-primary btn-small">发表评论</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 评论列表 -->
+            <div id="comments-list" class="comments-list">
+                <div class="loading">加载评论中...</div>
+            </div>
+
+            <!-- 加载更多按钮 -->
+            <div id="load-more-container" style="display: none; text-align: center; margin-top: 20px;">
+                <button id="load-more-btn" class="btn-secondary">加载更多评论</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/detail.js"></script>
+</body>
+</html>
+

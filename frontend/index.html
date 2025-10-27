@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blossom - 创意论坛社区 | 思想绽放的地方</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/smooth-scroll.css">
+    <link rel="stylesheet" href="css/topic-search.css">
+</head>
+<body>
+    <!-- 装饰性曲线 -->
+    <svg class="decoration-curve curve-left" viewBox="0 0 200 1200" preserveAspectRatio="none">
+        <path d="M0,0 Q50,300 0,600 T0,1200" fill="none"/>
+    </svg>
+    <svg class="decoration-curve curve-right" viewBox="0 0 200 1200" preserveAspectRatio="none">
+        <path d="M200,0 Q150,300 200,600 T200,1200" fill="none"/>
+    </svg>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <h2 class="nav-logo">Blossom</h2>
+        </div>
+        <div class="nav-center">
+            <span class="nav-welcome">欢迎来到创意论坛社区 ✨</span>
+        </div>
+        <div class="nav-right">
+            <!-- 用户菜单按钮 -->
+            <div class="user-actions">
+                <button id="user-menu-btn" class="user-menu-btn">
+                    <span class="user-icon">👤</span>
+                    <span id="username-display">登录</span>
+                </button>
+                <div id="user-dropdown" class="user-dropdown">
+                    <!-- 未登录状态 -->
+                    <div id="not-logged-in">
+                        <a href="login.html" class="dropdown-item">登录 / 注册</a>
+                    </div>
+                    <!-- 已登录状态 -->
+                    <div id="logged-in" style="display: none;">
+                        <div class="dropdown-user">
+                            <span id="user-name">用户名</span>
+                        </div>
+                        <a href="post.html" class="dropdown-item">发布话题</a>
+                        <button id="logout-btn" class="dropdown-item">退出登录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <!-- Hero 区域 -->
+        <section class="hero-section">
+            <div class="logo-container">
+                <svg class="star-icon star-1" width="50" height="50" viewBox="0 0 24 24">
+                    <path d="M12 2L15 9L22 9L16.5 14L19 21L12 16L5 21L7.5 14L2 9L9 9Z" fill="#fff"/>
+                </svg>
+                <svg class="star-icon star-2" width="35" height="35" viewBox="0 0 24 24">
+                    <path d="M12 2L15 9L22 9L16.5 14L19 21L12 16L5 21L7.5 14L2 9L9 9Z" fill="#fff"/>
+                </svg>
+                
+                <!-- 气泡风格的 Logo -->
+                <div class="bubble-logo">
+                    <svg class="bubble-svg" viewBox="0 0 900 320">
+                        <!-- 主气泡背景 -->
+                        <path class="bubble-shape" d="M 50,160 
+                            Q 50,90 130,70 
+                            Q 220,50 320,80 
+                            Q 400,60 480,70 
+                            Q 580,80 660,105 
+                            Q 760,130 780,145 
+                            Q 850,160 820,215 
+                            Q 790,270 720,260 
+                            Q 630,248 530,258 
+                            Q 430,268 350,258 
+                            Q 260,245 180,230 
+                            Q 100,215 60,185 
+                            Q 30,170 50,160 Z" 
+                            fill="#5B9FED"/>
+                        
+                        <!-- 气泡高光 -->
+                        <ellipse class="bubble-highlight" cx="230" cy="110" rx="90" ry="45" fill="rgba(255,255,255,0.3)"/>
+                        <ellipse class="bubble-highlight" cx="520" cy="100" rx="70" ry="38" fill="rgba(255,255,255,0.2)"/>
+                        <ellipse class="bubble-highlight" cx="700" cy="135" rx="60" ry="35" fill="rgba(255,255,255,0.25)"/>
+                    </svg>
+                    <h1 class="main-text">Blossom</h1>
+                </div>
+
+                <!-- 云朵装饰 -->
+                <svg class="cloud-icon" width="60" height="40" viewBox="0 0 60 40">
+                    <path d="M15,25 Q15,15 25,15 Q30,10 35,15 Q45,15 45,25 Q45,35 35,35 L25,35 Q15,35 15,25 Z" 
+                          fill="#fff" stroke="#000" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <p class="tagline">/ 创意交流 · 自由讨论 · 共同成长</p>
+            
+            <!-- 特性展示 -->
+            <div class="features-row">
+                <div class="feature-box">
+                    <h3>技术讨论</h3>
+                    <p>编程开发</p>
+                </div>
+                <div class="feature-box">
+                    <h3>创意分享</h3>
+                    <p>设计 · 艺术</p>
+                </div>
+            </div>
+
+            <!-- 统计数据 -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-num">2024</span>
+                    <span class="stat-label">活跃用户</span>
+                </div>
+                <div class="stat-divider">/</div>
+                <div class="stat-box">
+                    <span class="stat-num">10K+</span>
+                    <span class="stat-label">讨论话题</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 话题卡片区域 -->
+        <section class="topics-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="title-text">热门话题</span>
+                    <div class="title-underline"></div>
+                </h2>
+                
+                <!-- 搜索框 - 移到这里 -->
+                <div class="topic-search-box">
+                    <input type="text" placeholder="搜索话题..." class="topic-search-input" id="topic-search-input">
+                    <button class="topic-search-btn" id="topic-search-btn">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8" stroke-width="2.5"></circle>
+                            <path d="m21 21-4.35-4.35" stroke-width="2.5"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- 排序选择 -->
+                <div class="sort-selector">
+                    <button class="sort-btn active" data-sort="hot">🔥 最热</button>
+                    <button class="sort-btn" data-sort="new">🆕 最新</button>
+                    <button class="sort-btn" data-sort="like">👍 点赞</button>
+                </div>
+            </div>
+            
+            <div class="topics-grid">
+                <!-- 话题卡片 1 -->
+                <article class="topic-card grid-card" data-topic-id="1">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">👤</div>
+                            <div class="user-info">
+                                <h4 class="username">技术极客</h4>
+                                <span class="post-time">2小时前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">如何优化 Go 语言的并发性能？</h3>
+                        <p class="topic-excerpt">最近在做一个高并发的项目，想了解一下 Go 语言在并发优化方面的最佳实践和性能调优技巧...</p>
+                        <div class="topic-footer">
+                            <span class="tag">技术</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 42</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="1">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">128</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="1">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">5</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 话题卡片 2 -->
+                <article class="topic-card grid-card" data-topic-id="2">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">🎨</div>
+                            <div class="user-info">
+                                <h4 class="username">设计师小王</h4>
+                                <span class="post-time">5小时前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">2024 年最流行的 UI 设计趋势</h3>
+                        <p class="topic-excerpt">分享一些我在今年观察到的设计趋势，包括新拟态、玻璃态效果、网格布局等现代设计语言...</p>
+                        <div class="topic-footer">
+                            <span class="tag tag-design">设计</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 86</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="2">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">256</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="2">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">8</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 话题卡片 3 -->
+                <article class="topic-card grid-card" data-topic-id="3">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">📱</div>
+                            <div class="user-info">
+                                <h4 class="username">前端开发者</h4>
+                                <span class="post-time">1天前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">Vue 3 vs React：2024 年该选择哪个？</h3>
+                        <p class="topic-excerpt">作为一个全栈开发者，我想听听大家对这两个框架的看法，以及在实际项目中的选择经验...</p>
+                        <div class="topic-footer">
+                            <span class="tag tag-discuss">讨论</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 194</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="3">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">512</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="3">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">12</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 话题卡片 4 -->
+                <article class="topic-card grid-card" data-topic-id="4">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">🚀</div>
+                            <div class="user-info">
+                                <h4 class="username">创业者</h4>
+                                <span class="post-time">2天前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">分享我的独立开发者之旅</h3>
+                        <p class="topic-excerpt">从全职工作到独立开发，这一年的经验和教训。包括产品开发、市场推广、用户反馈等方面...</p>
+                        <div class="topic-footer">
+                            <span class="tag tag-share">分享</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 67</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="4">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">389</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="4">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">7</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 话题卡片 5 -->
+                <article class="topic-card grid-card" data-topic-id="5">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">💡</div>
+                            <div class="user-info">
+                                <h4 class="username">产品经理</h4>
+                                <span class="post-time">3天前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">从用户视角看产品设计</h3>
+                        <p class="topic-excerpt">好的产品设计不仅仅是漂亮的界面，更重要的是理解用户需求和使用场景...</p>
+                        <div class="topic-footer">
+                            <span class="tag tag-product">产品</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 53</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="5">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">201</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="5">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">4</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 话题卡片 6 -->
+                <article class="topic-card grid-card" data-topic-id="6">
+                    <div class="card-content">
+                        <div class="topic-header">
+                            <div class="user-avatar">🎮</div>
+                            <div class="user-info">
+                                <h4 class="username">游戏开发</h4>
+                                <span class="post-time">4天前</span>
+                            </div>
+                        </div>
+                        <h3 class="topic-title">Unity vs Unreal：游戏引擎选择指南</h3>
+                        <p class="topic-excerpt">详细对比两大游戏引擎的优劣势，帮助新手开发者做出更好的选择...</p>
+                        <div class="topic-footer">
+                            <span class="tag tag-game">游戏</span>
+                            <div class="topic-actions">
+                                <div class="topic-stats">
+                                    <span>💬 98</span>
+                                </div>
+                                <div class="vote-buttons">
+                                    <button class="vote-btn like-btn" data-topic-id="6">
+                                        <span class="vote-icon">👍</span>
+                                        <span class="vote-count">445</span>
+                                    </button>
+                                    <button class="vote-btn dislike-btn" data-topic-id="6">
+                                        <span class="vote-icon">👎</span>
+                                        <span class="vote-count">9</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 底部 CTA 区域 -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="cta-title">加入 Blossom 社区</h2>
+                <p class="cta-desc">与志同道合的创作者一起交流讨论</p>
+                <div class="cta-buttons">
+                    <a href="login.html" class="cta-btn primary">立即加入</a>
+                    <a href="post.html" class="cta-btn secondary">发布话题</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p class="footer-text">© 2024 Blossom / 创意论坛社区 · 思想绽放的地方</p>
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">使用条款</a>
+                <a href="#">隐私政策</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- 回到顶部按钮 -->
+    <button class="floating-btn back-to-top" id="back-to-top" title="回到顶部">
+        ⬆️
+    </button>
+
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 回到顶部功能
+        const backToTopBtn = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
