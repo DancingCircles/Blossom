@@ -7,15 +7,16 @@ Write-Host "🔍 检查 go.mod 版本..." -ForegroundColor Cyan
 
 $content = Get-Content $goModFile -Raw
 
-if ($content -match "go 1\.24") {
-    Write-Host "⚠️  检测到版本错误 (1.24.x)，修正为 1.22..." -ForegroundColor Yellow
+if ($content -match "go 1\.24|go 1\.22") {
+    Write-Host "⚠️  检测到版本需要更新，修正为 1.23..." -ForegroundColor Yellow
     
-    $content = $content -replace "go 1\.24\.\d+", "go 1.22"
-    $content = $content -replace "go 1\.24", "go 1.22"
+    $content = $content -replace "go 1\.24\.\d+", "go 1.23"
+    $content = $content -replace "go 1\.24", "go 1.23"
+    $content = $content -replace "go 1\.22", "go 1.23"
     
     Set-Content -Path $goModFile -Value $content -NoNewline
     
-    Write-Host "✅ go.mod 已修正为 1.22" -ForegroundColor Green
+    Write-Host "✅ go.mod 已修正为 1.23" -ForegroundColor Green
     
     # 运行 go mod tidy
     Set-Location web_app
@@ -24,7 +25,7 @@ if ($content -match "go 1\.24") {
     
     Write-Host "✅ 依赖已更新" -ForegroundColor Green
 } else {
-    Write-Host "✅ go.mod 版本正确 (1.22)" -ForegroundColor Green
+    Write-Host "✅ go.mod 版本正确 (1.23)" -ForegroundColor Green
 }
 
 Write-Host ""
