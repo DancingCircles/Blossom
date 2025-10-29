@@ -49,6 +49,8 @@ body {
     overflow-x: hidden;
     position: relative;
     line-height: 1.6;
+    /* 为固定导航栏预留空间 */
+    padding-top: 80px;
     /* 优化滚动性能 */
     -webkit-overflow-scrolling: touch;
     scroll-padding-top: 80px;
@@ -153,18 +155,39 @@ body::after {
 
 /* ========== 导航栏 ========== */
 .navbar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 18px 60px;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-    border-bottom: 4px solid var(--secondary-black);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(91, 159, 237, 0.1);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+    transform: translateY(0);
+}
+
+/* 向下滚动时隐藏导航栏 */
+.navbar.hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
+}
+
+/* 滚动时导航栏样式（更不透明） */
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .nav-left {

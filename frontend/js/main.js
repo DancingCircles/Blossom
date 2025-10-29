@@ -199,22 +199,50 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// ========== 滚动方向检测 ==========
+// ========== 滚动方向检测 & 导航栏自动隐藏 ==========
 let lastScrollTop = 0;
+let scrollTimeout = null;
+const navbar = document.querySelector('.navbar');
+
 window.addEventListener('scroll', () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
-    if (scrollTop > lastScrollTop) {
-        // 向下滚动
-        document.body.classList.add('scrolling-down');
-        document.body.classList.remove('scrolling-up');
-    } else {
-        // 向上滚动
-        document.body.classList.add('scrolling-up');
-        document.body.classList.remove('scrolling-down');
+    // 清除之前的定时器
+    if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
     }
     
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    // 在顶部时始终显示导航栏
+    if (scrollTop <= 10) {
+        navbar?.classList.remove('hidden');
+        navbar?.classList.remove('scrolled');
+        lastScrollTop = scrollTop;
+        return;
+    }
+    
+    // 滚动超过 50px 时增加导航栏不透明度
+    if (scrollTop > 50) {
+        navbar?.classList.add('scrolled');
+    } else {
+        navbar?.classList.remove('scrolled');
+    }
+    
+    // 滚动方向检测（至少滚动 5px 才触发）
+    if (Math.abs(scrollTop - lastScrollTop) > 5) {
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // 向下滚动且超过100px：隐藏导航栏
+            navbar?.classList.add('hidden');
+            document.body.classList.add('scrolling-down');
+            document.body.classList.remove('scrolling-up');
+        } else {
+            // 向上滚动：显示导航栏
+            navbar?.classList.remove('hidden');
+            document.body.classList.add('scrolling-up');
+            document.body.classList.remove('scrolling-down');
+        }
+    }
+    
+    lastScrollTop = scrollTop;
 }, { passive: true });
 
 // ========== 键盘快捷键 ==========
