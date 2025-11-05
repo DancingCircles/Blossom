@@ -175,58 +175,245 @@ async function deleteComment(commentId) {
 
 // 显示提示消息
 function showMessage(message, type = 'info') {
-    // 创建提示框
+    // 创建提示框容器
     const msgBox = document.createElement('div');
     msgBox.className = `message-box message-${type}`;
-    msgBox.textContent = message;
+    
+    // 根据类型设置图标
+    const icons = {
+        'success': '✓',
+        'error': '✗',
+        'info': 'ℹ'
+    };
+    
+    const colors = {
+        'success': '#2e7d32',
+        'error': '#b71c1c',
+        'info': '#1565c0'
+    };
+    
+    msgBox.innerHTML = `
+        <div class="message-icon">${icons[type] || 'ℹ'}</div>
+        <div class="message-text">${message}</div>
+    `;
     
     // 添加样式
     msgBox.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 16px 24px;
-        background: ${type === 'error' ? '#f44336' : type === 'success' ? '#4CAF50' : '#2196F3'};
-        color: white;
-        border-radius: 4px;
-        font-weight: 600;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        padding: 20px 40px;
+        background: ${colors[type]};
+        color: #f5ebe0;
+        border: 5px solid #3d0000;
+        box-shadow: 8px 8px 0 rgba(61, 0, 0, 0.3);
+        font-weight: 900;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         z-index: 10000;
-        animation: slideIn 0.3s ease;
+        animation: messageSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        min-width: 300px;
+        justify-content: center;
     `;
     
     document.body.appendChild(msgBox);
     
     // 3秒后自动移除
     setTimeout(() => {
-        msgBox.style.animation = 'slideOut 0.3s ease';
+        msgBox.style.animation = 'messageSlideUp 0.3s ease forwards';
         setTimeout(() => msgBox.remove(), 300);
     }, 3000);
 }
 
-// 添加动画样式
+// 自定义确认对话框
+function showConfirm(message, onConfirm, onCancel) {
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    `;
+    
+    // 创建对话框
+    const dialog = document.createElement('div');
+    dialog.className = 'confirm-dialog';
+    dialog.innerHTML = `
+        <div class="confirm-header">确认操作</div>
+        <div class="confirm-message">${message}</div>
+        <div class="confirm-buttons">
+            <button class="confirm-btn confirm-yes">确定</button>
+            <button class="confirm-btn confirm-no">取消</button>
+        </div>
+    `;
+    
+    dialog.style.cssText = `
+        background: #f5ebe0;
+        border: 6px solid #3d0000;
+        box-shadow: 12px 12px 0 rgba(61, 0, 0, 0.3);
+        padding: 40px;
+        min-width: 400px;
+        animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    `;
+    
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    
+    // 按钮点击事件
+    const yesBtn = dialog.querySelector('.confirm-yes');
+    const noBtn = dialog.querySelector('.confirm-no');
+    
+    yesBtn.onclick = () => {
+        overlay.style.animation = 'fadeOut 0.2s ease';
+        setTimeout(() => {
+            overlay.remove();
+            if (onConfirm) onConfirm();
+        }, 200);
+    };
+    
+    noBtn.onclick = () => {
+        overlay.style.animation = 'fadeOut 0.2s ease';
+        setTimeout(() => {
+            overlay.remove();
+            if (onCancel) onCancel();
+        }, 200);
+    };
+    
+    // 点击遮罩关闭
+    overlay.onclick = (e) => {
+        if (e.target === overlay) {
+            noBtn.click();
+        }
+    };
+}
+
+// 添加动画和样式
 if (!document.querySelector('#message-animations')) {
     const style = document.createElement('style');
     style.id = 'message-animations';
     style.textContent = `
-        @keyframes slideIn {
+        @keyframes messageSlideDown {
             from {
-                transform: translateX(400px);
+                transform: translateX(-50%) translateY(-100px);
                 opacity: 0;
             }
             to {
-                transform: translateX(0);
+                transform: translateX(-50%) translateY(0);
                 opacity: 1;
             }
         }
-        @keyframes slideOut {
+        @keyframes messageSlideUp {
             from {
-                transform: translateX(0);
+                transform: translateX(-50%) translateY(0);
                 opacity: 1;
             }
             to {
-                transform: translateX(400px);
+                transform: translateX(-50%) translateY(-100px);
                 opacity: 0;
             }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .message-icon {
+            font-size: 28px;
+            font-weight: 900;
+        }
+        
+        .message-text {
+            flex: 1;
+        }
+        
+        .confirm-header {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #3d0000;
+            margin-bottom: 24px;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+        
+        .confirm-message {
+            font-size: 18px;
+            color: #3d0000;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .confirm-btn {
+            padding: 14px 36px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: 4px solid #3d0000;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            letter-spacing: 1px;
+            box-shadow: 4px 4px 0 rgba(61, 0, 0, 0.2);
+        }
+        
+        .confirm-yes {
+            background: #b71c1c;
+            color: #f5ebe0;
+        }
+        
+        .confirm-yes:hover {
+            background: #8b0000;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 rgba(61, 0, 0, 0.3);
+        }
+        
+        .confirm-no {
+            background: #f5ebe0;
+            color: #3d0000;
+        }
+        
+        .confirm-no:hover {
+            background: #fff;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 rgba(61, 0, 0, 0.3);
         }
     `;
     document.head.appendChild(style);

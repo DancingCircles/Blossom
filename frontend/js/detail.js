@@ -95,26 +95,28 @@ function renderTopicDetail(topic) {
 
     return `
         <div class="topic-header">
-            <div class="user-info">
+            <div class="topic-meta">
                 <div class="user-avatar">👤</div>
-                <div>
-                    <h4 class="username">${topic.username || '匿名用户'}</h4>
+                <div class="user-info">
+                    <h4>${topic.username || '匿名用户'}</h4>
                     <span class="post-time">${formatTime(topic.created_at)}</span>
                 </div>
             </div>
-            <span class="tag ${tagClasses[topic.category]}">${tagNames[topic.category]}</span>
         </div>
         <h2 class="topic-title">${escapeHtml(topic.title)}</h2>
         <div class="topic-content">${escapeHtml(topic.content).replace(/\n/g, '<br>')}</div>
-        <div class="topic-stats">
-            <button class="stat-item vote-btn" data-type="like" data-topic-id="${topic.id}">
-                👍 ${topic.like_count || 0}
-            </button>
-            <button class="stat-item vote-btn" data-type="dislike" data-topic-id="${topic.id}">
-                👎 ${topic.dislike_count || 0}
-            </button>
-            <span class="stat-item">💬 ${topic.comment_count || 0}</span>
-            <span class="stat-item">👁️ ${topic.view_count || 0}</span>
+        <div class="topic-footer">
+            <span class="topic-tag">${tagNames[topic.category]}</span>
+            <div class="topic-stats">
+                <button class="stat-item vote-btn" data-type="like" data-topic-id="${topic.id}">
+                    👍 ${topic.like_count || 0}
+                </button>
+                <button class="stat-item vote-btn" data-type="dislike" data-topic-id="${topic.id}">
+                    👎 ${topic.dislike_count || 0}
+                </button>
+                <span class="stat-item">💬 ${topic.comment_count || 0}</span>
+                <span class="stat-item">👁️ ${topic.view_count || 0}</span>
+            </div>
         </div>
     `;
 }
@@ -223,7 +225,9 @@ function renderComment(comment) {
         <div class="comment-avatar">👤</div>
         <div class="comment-body">
             <div class="comment-header">
-                <span class="comment-username">${escapeHtml(comment.username || '匿名用户')}</span>
+                <div class="comment-user">
+                    <span class="comment-username">${escapeHtml(comment.username || '匿名用户')}</span>
+                </div>
                 <span class="comment-time">${formatTime(comment.created_at)}</span>
             </div>
             <div class="comment-content">${escapeHtml(comment.content)}</div>
@@ -323,31 +327,29 @@ function initLoadMore() {
 
 // 处理删除评论
 async function handleDeleteComment(commentId) {
-    if (!confirm('确定要删除这条评论吗？')) {
-        return;
-    }
-    
-    try {
-        await deleteComment(commentId);
-        showMessage('评论已删除', 'success');
-        
-        // 从DOM中移除评论
-        const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
-        if (commentElement) {
-            commentElement.remove();
+    showConfirm('确定要删除这条评论吗？', async () => {
+        try {
+            await deleteComment(commentId);
+            showMessage('评论已删除', 'success');
+            
+            // 从DOM中移除评论
+            const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
+            if (commentElement) {
+                commentElement.remove();
+            }
+            
+            // 重新加载话题详情（更新评论数）
+            await loadTopicDetail();
+            
+            // 更新评论计数
+            const commentCount = document.getElementById('comment-count');
+            const currentCount = parseInt(commentCount.textContent) || 0;
+            commentCount.textContent = Math.max(0, currentCount - 1);
+            
+        } catch (error) {
+            showMessage(error.message || '删除失败', 'error');
         }
-        
-        // 重新加载话题详情（更新评论数）
-        await loadTopicDetail();
-        
-        // 更新评论计数
-        const commentCount = document.getElementById('comment-count');
-        const currentCount = parseInt(commentCount.textContent) || 0;
-        commentCount.textContent = Math.max(0, currentCount - 1);
-        
-    } catch (error) {
-        showMessage(error.message || '删除失败', 'error');
-    }
+    });
 }
 
 // 格式化时间

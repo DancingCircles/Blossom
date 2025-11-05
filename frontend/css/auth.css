@@ -1,98 +1,126 @@
-/* 登录注册页面样式 */
+/* 登录注册页面 - 复古海报风格 */
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
 
 .back-home {
     position: fixed;
     top: 30px;
     left: 30px;
     padding: 12px 24px;
-    background: #fff;
-    border: 2.5px solid var(--secondary-black);
-    border-radius: 25px;
+    background: var(--bg-light);
+    border: 3px solid var(--deep-red);
     text-decoration: none;
     color: var(--text-dark);
-    font-weight: 600;
-    font-size: 15px;
-    transition: all 0.3s ease;
+    font-weight: 700;
+    font-size: 13px;
     z-index: 1000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .back-home:hover {
-    background: var(--secondary-black);
-    color: #fff;
-    transform: translateX(-5px);
+    background: var(--deep-red);
+    color: var(--text-light);
 }
 
 .auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    z-index: 10;
 }
 
 .auth-card {
-    background: #fff;
-    border: 3px solid var(--secondary-black);
-    padding: 50px;
-    max-width: 480px;
-    width: 100%;
-    box-shadow: 12px 12px 0 var(--secondary-black);
+    background: var(--bg-light);
+    border: 6px solid var(--deep-red);
+    padding: 50px 40px;
     position: relative;
 }
 
-.auth-card::before {
+/* 装饰角 */
+.auth-card::before,
+.auth-card::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
+    width: 30px;
+    height: 30px;
+    border: 4px solid var(--primary-red);
+}
+
+.auth-card::before {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.auth-card::after {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
 }
 
 .auth-title {
-    font-size: 48px;
+    font-family: 'Impact', sans-serif;
+    font-size: 72px;
     font-weight: 900;
     text-align: center;
     margin-bottom: 10px;
-    color: var(--primary-blue);
+    color: var(--primary-red);
+    letter-spacing: -4px;
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0 var(--deep-red);
 }
 
 .auth-subtitle {
     text-align: center;
-    color: var(--text-gray);
-    margin-bottom: 35px;
-    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 40px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .auth-tabs {
     display: flex;
-    gap: 15px;
+    gap: 0;
     margin-bottom: 30px;
+    border: 3px solid var(--deep-red);
 }
 
 .auth-tab {
     flex: 1;
-    padding: 12px;
-    border: 2.5px solid var(--secondary-black);
-    background: transparent;
-    font-size: 16px;
+    padding: 14px;
+    border: none;
+    border-right: 3px solid var(--deep-red);
+    background: var(--bg-medium);
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dark);
+}
+
+.auth-tab:last-child {
+    border-right: none;
 }
 
 .auth-tab.active {
-    background: var(--secondary-black);
-    color: #fff;
+    background: var(--primary-red);
+    color: var(--text-light);
 }
 
 .auth-tab:hover:not(.active) {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--bg-light);
 }
 
 .auth-form {
@@ -101,18 +129,6 @@
 
 .auth-form.active {
     display: block;
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .form-group {
@@ -121,85 +137,88 @@
 
 .form-group label {
     display: block;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .form-group input {
     width: 100%;
     padding: 14px 18px;
-    border: 2.5px solid var(--border-gray);
+    border: 3px solid var(--deep-red);
     font-size: 15px;
-    transition: all 0.3s ease;
     outline: none;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    font-weight: 600;
+    font-family: 'Arial', sans-serif;
 }
 
 .form-group input:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(91, 159, 237, 0.1);
+    border-color: var(--primary-red);
+    background: #fff;
 }
 
 .auth-btn {
     width: 100%;
-    padding: 16px;
-    background: var(--secondary-black);
-    color: #fff;
-    border: 3px solid var(--secondary-black);
+    padding: 18px;
+    background: var(--primary-red);
+    color: var(--text-light);
+    border: 4px solid var(--deep-red);
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
     margin-top: 10px;
     text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .auth-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-.auth-btn:active {
-    transform: translateY(-1px);
+    background: var(--deep-red);
 }
 
 .auth-tip {
     text-align: center;
-    margin-top: 20px;
-    color: var(--text-gray);
-    font-size: 14px;
+    margin-top: 25px;
+    color: var(--text-dark);
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .auth-tip a,
 .switch-tab {
-    color: var(--primary-blue);
+    color: var(--primary-red);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
+    border-bottom: 2px solid transparent;
 }
 
 .auth-tip a:hover,
 .switch-tab:hover {
-    text-decoration: underline;
+    border-bottom-color: var(--primary-red);
 }
 
 /* 响应式 */
 @media (max-width: 768px) {
     .auth-card {
-        padding: 35px 25px;
-        box-shadow: 8px 8px 0 var(--secondary-black);
+        padding: 40px 25px;
+        border-width: 4px;
     }
 
     .auth-title {
-        font-size: 36px;
+        font-size: 48px;
+        letter-spacing: -3px;
+        text-shadow: 3px 3px 0 var(--deep-red);
     }
 
     .back-home {
         top: 20px;
         left: 20px;
         padding: 10px 20px;
-        font-size: 14px;
+        font-size: 12px;
     }
 }
-

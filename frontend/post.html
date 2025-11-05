@@ -4,95 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>发布话题 - Blossom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/post.css">
 </head>
 <body>
     <!-- 顶部导航 -->
     <nav class="navbar">
-        <a href="index.html" class="back-btn">← 返回</a>
-        <h2 class="page-title">发布话题</h2>
-        <div></div>
+        <div class="nav-left">
+            <a href="index.html" class="back-btn">← 返回首页</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="nav-logo">BLOSSOM</h1>
+        </div>
+        <div class="nav-right">
+            <span class="nav-status">创作模式</span>
+        </div>
     </nav>
 
     <main class="post-container">
-        <form id="post-form" class="post-form">
-            <!-- 标题 -->
-            <div class="form-group">
-                <label for="post-title">话题标题</label>
-                <input 
-                    type="text" 
-                    id="post-title" 
-                    name="title" 
-                    placeholder="给你的话题起个好标题..." 
-                    maxlength="100"
-                    required>
-                <span class="char-count"><span id="title-count">0</span>/100</span>
+        <div class="post-wrapper">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <h2 class="page-title">创作话题</h2>
+                <p class="page-subtitle">分享你的想法，让创意绽放</p>
             </div>
 
-            <!-- 分类标签 -->
-            <div class="form-group">
-                <label>选择分类</label>
-                <div class="tag-selector">
-                    <input type="radio" name="category" value="tech" id="cat-tech" checked>
-                    <label for="cat-tech" class="tag-option">技术</label>
+            <form id="post-form" class="post-form">
+                <div class="form-row">
+                    <!-- 左列 -->
+                    <div class="form-column">
+                        <!-- 标题输入 -->
+                        <div class="form-section">
+                            <label class="field-label">
+                                <span class="label-text">话题标题</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="post-title" 
+                                name="title" 
+                                placeholder="给你的话题起个好标题..." 
+                                maxlength="100"
+                                class="input-field"
+                                required>
+                            <div class="field-footer">
+                                <span class="char-count"><span id="title-count">0</span>/100</span>
+                            </div>
+                        </div>
 
-                    <input type="radio" name="category" value="design" id="cat-design">
-                    <label for="cat-design" class="tag-option tag-design">设计</label>
+                        <!-- 内容输入 -->
+                        <div class="form-section">
+                            <label class="field-label">
+                                <span class="label-text">话题内容</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <textarea 
+                                id="post-content" 
+                                name="content" 
+                                placeholder="详细描述你的想法和观点..."
+                                maxlength="5000"
+                                class="input-field input-textarea"
+                                required></textarea>
+                            <div class="field-footer">
+                                <span class="char-count"><span id="content-count">0</span>/5000</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <input type="radio" name="category" value="discuss" id="cat-discuss">
-                    <label for="cat-discuss" class="tag-option tag-discuss">讨论</label>
+                    <!-- 右列 -->
+                    <div class="form-column form-column-side">
+                        <!-- 分类选择 -->
+                        <div class="form-section">
+                            <label class="field-label">
+                                <span class="label-text">选择分类</span>
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="category-list">
+                                <input type="radio" name="category" value="tech" id="cat-tech">
+                                <label for="cat-tech" class="category-item">技术</label>
 
-                    <input type="radio" name="category" value="share" id="cat-share">
-                    <label for="cat-share" class="tag-option tag-share">分享</label>
+                                <input type="radio" name="category" value="design" id="cat-design">
+                                <label for="cat-design" class="category-item">设计</label>
 
-                    <input type="radio" name="category" value="product" id="cat-product">
-                    <label for="cat-product" class="tag-option tag-product">产品</label>
-                </div>
-            </div>
+                                <input type="radio" name="category" value="discuss" id="cat-discuss" checked>
+                                <label for="cat-discuss" class="category-item">讨论</label>
 
-            <!-- 内容 -->
-            <div class="form-group">
-                <label for="post-content">话题内容</label>
-                <textarea 
-                    id="post-content" 
-                    name="content" 
-                    placeholder="详细描述你的想法..."
-                    rows="12"
-                    maxlength="5000"
-                    required></textarea>
-                <span class="char-count"><span id="content-count">0</span>/5000</span>
-            </div>
+                                <input type="radio" name="category" value="share" id="cat-share">
+                                <label for="cat-share" class="category-item">分享</label>
 
-            <!-- 提交按钮 -->
-            <div class="form-actions">
-                <button type="button" class="btn-secondary" onclick="history.back()">取消</button>
-                <button type="submit" class="btn-primary">发布话题</button>
-            </div>
-        </form>
+                                <input type="radio" name="category" value="product" id="cat-product">
+                                <label for="cat-product" class="category-item">产品</label>
+                            </div>
+                        </div>
 
-        <!-- 预览区域 -->
-        <aside class="post-preview">
-            <h3>预览</h3>
-            <div class="preview-card">
-                <div class="preview-header">
-                    <div class="user-avatar">👤</div>
-                    <div class="user-info">
-                        <h4 class="username" id="preview-username">游客</h4>
-                        <span class="post-time">刚刚</span>
+                        <!-- 提交按钮 -->
+                        <div class="form-section form-section-actions">
+                            <button type="button" class="btn btn-cancel" onclick="history.back()">取消</button>
+                            <button type="submit" class="btn btn-submit">发布话题</button>
+                        </div>
                     </div>
                 </div>
-                <h3 class="preview-title" id="preview-title">话题标题会显示在这里</h3>
-                <p class="preview-content" id="preview-content">话题内容会显示在这里...</p>
-                <div class="preview-footer">
-                    <span class="tag" id="preview-tag">技术</span>
-                </div>
-            </div>
-        </aside>
+            </form>
+        </div>
     </main>
 
     <script src="js/api.js"></script>
     <script src="js/post.js"></script>
 </body>
 </html>
-

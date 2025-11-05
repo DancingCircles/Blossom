@@ -74,19 +74,7 @@ func createIndex(ctx context.Context) error {
 	mapping := `{
 		"settings": {
 			"number_of_shards": 1,
-			"number_of_replicas": 0,
-			"analysis": {
-				"analyzer": {
-					"ik_smart": {
-						"type": "custom",
-						"tokenizer": "standard"
-					},
-					"ik_max_word": {
-						"type": "custom",
-						"tokenizer": "standard"
-					}
-				}
-			}
+			"number_of_replicas": 0
 		},
 		"mappings": {
 			"properties": {
@@ -98,8 +86,6 @@ func createIndex(ctx context.Context) error {
 				},
 				"title": {
 					"type": "text",
-					"analyzer": "standard",
-					"search_analyzer": "standard",
 					"fields": {
 						"keyword": {
 							"type": "keyword",
@@ -108,9 +94,7 @@ func createIndex(ctx context.Context) error {
 					}
 				},
 				"content": {
-					"type": "text",
-					"analyzer": "standard",
-					"search_analyzer": "standard"
+					"type": "text"
 				},
 				"category": {
 					"type": "keyword"

@@ -4,28 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>话题详情 - Blossom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/post.css">
 </head>
 <body>
     <!-- 顶部导航 -->
     <nav class="navbar">
-        <a href="index.html" class="back-btn">← 返回</a>
-        <h2 class="page-title">话题详情</h2>
-        <div></div>
+        <div class="nav-left">
+            <a href="index.html" class="back-btn">← 返回首页</a>
+        </div>
+        <div class="nav-center">
+            <h1 class="nav-logo">BLOSSOM</h1>
+        </div>
+        <div class="nav-right">
+            <span class="nav-status">浏览模式</span>
+        </div>
     </nav>
 
     <main class="detail-container">
         <!-- 话题详情卡片 -->
-        <article id="topic-detail" class="topic-card">
+        <article id="topic-detail" class="detail-card">
             <div class="loading">加载中...</div>
         </article>
 
         <!-- 评论区域 -->
         <section class="comments-section">
-            <h3 class="section-title">
-                评论 (<span id="comment-count">0</span>)
-            </h3>
+            <div class="comments-header">
+                <h3 class="comments-title">评论 (<span id="comment-count">0</span>)</h3>
+            </div>
 
             <!-- 发表评论表单（登录后显示） -->
             <div id="comment-form-container" class="comment-form-container" style="display: none;">
@@ -33,12 +42,13 @@
                     <textarea 
                         id="comment-input" 
                         placeholder="说说你的想法..." 
-                        rows="3"
+                        rows="4"
                         maxlength="1000"
+                        class="comment-textarea"
                         required></textarea>
                     <div class="comment-form-footer">
                         <span class="char-count"><span id="comment-char-count">0</span>/1000</span>
-                        <button type="submit" class="btn-primary btn-small">发表评论</button>
+                        <button type="submit" class="btn-comment">发表评论</button>
                     </div>
                 </form>
             </div>
@@ -49,8 +59,8 @@
             </div>
 
             <!-- 加载更多按钮 -->
-            <div id="load-more-container" style="display: none; text-align: center; margin-top: 20px;">
-                <button id="load-more-btn" class="btn-secondary">加载更多评论</button>
+            <div id="load-more-container" style="display: none; text-align: center; margin-top: 25px;">
+                <button id="load-more-btn" class="btn-load-more">加载更多评论</button>
             </div>
         </section>
     </main>
@@ -59,4 +69,3 @@
     <script src="js/detail.js"></script>
 </body>
 </html>
-

@@ -17,67 +17,18 @@ function initPostPage() {
     const form = document.getElementById('post-form');
     const titleInput = document.getElementById('post-title');
     const contentInput = document.getElementById('post-content');
-    const categoryInputs = document.querySelectorAll('input[name="category"]');
     
-    // 预览元素
-    const previewUsername = document.getElementById('preview-username');
-    const previewTitle = document.getElementById('preview-title');
-    const previewContent = document.getElementById('preview-content');
-    const previewTag = document.getElementById('preview-tag');
-
-    // 设置当前用户名
-    previewUsername.textContent = getCurrentUsername();
-
     // 字符计数
     const titleCount = document.getElementById('title-count');
     const contentCount = document.getElementById('content-count');
 
     titleInput.addEventListener('input', () => {
         titleCount.textContent = titleInput.value.length;
-        updatePreview();
     });
 
     contentInput.addEventListener('input', () => {
         contentCount.textContent = contentInput.value.length;
-        updatePreview();
     });
-
-    // 分类选择
-    categoryInputs.forEach(input => {
-        input.addEventListener('change', updatePreview);
-    });
-
-    // 更新预览
-    function updatePreview() {
-        const title = titleInput.value.trim() || '话题标题会显示在这里';
-        const content = contentInput.value.trim() || '话题内容会显示在这里...';
-        const category = document.querySelector('input[name="category"]:checked').value;
-
-        previewTitle.textContent = title;
-        previewContent.textContent = content.length > 200 
-            ? content.substring(0, 200) + '...' 
-            : content;
-
-        // 更新标签
-        const tagNames = {
-            'tech': '技术',
-            'design': '设计',
-            'discuss': '讨论',
-            'share': '分享',
-            'product': '产品'
-        };
-        
-        const tagClasses = {
-            'tech': '',
-            'design': 'tag-design',
-            'discuss': 'tag-discuss',
-            'share': 'tag-share',
-            'product': 'tag-product'
-        };
-
-        previewTag.textContent = tagNames[category];
-        previewTag.className = 'tag ' + tagClasses[category];
-    }
 
     // 表单提交
     form.addEventListener('submit', async (e) => {
@@ -124,4 +75,3 @@ function initPostPage() {
         }
     });
 }
-

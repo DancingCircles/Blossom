@@ -1,5 +1,12 @@
 // Blossom 论坛 - 主 JavaScript 文件
 
+// ========== 全局分页状态 ==========
+let currentPage = 1;
+let totalPages = 1;
+let currentSortType = 'hot';
+let currentSearchKeyword = ''; // 当前搜索关键词
+const pageSize = 8; // 每页8条记录
+
 // ========== 页面加载动画 ==========
 document.addEventListener('DOMContentLoaded', () => {
     initAnimations();
@@ -7,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallax();
     initUserMenu();
     initSorting(); // 这个会自动调用 loadTopics 和 bindVoteButtons
+    initPagination(); // 初始化分页功能
 });
 
 // 初始化入场动画
@@ -307,10 +315,24 @@ function initUserMenu() {
     const loggedIn = document.getElementById('logged-in');
     const userName = document.getElementById('user-name');
     const logoutBtn = document.getElementById('logout-btn');
+    const postBtn = document.getElementById('post-btn');
     
     // 如果关键元素不存在，直接返回
     if (!userMenuBtn || !usernameDisplay) {
         return;
+    }
+    
+    // 发帖按钮点击验证
+    if (postBtn) {
+        postBtn.addEventListener('click', (e) => {
+            if (!isLoggedIn()) {
+                e.preventDefault();
+                showMessage('请先登录后再发帖', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        });
     }
 
     // 更新用户UI状态
@@ -350,9 +372,9 @@ function initUserMenu() {
     // 退出登录
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            if (confirm('确定要退出登录吗？')) {
+            showConfirm('确定要退出登录吗？', () => {
                 logout();
-            }
+            });
         });
     }
 }
@@ -371,17 +393,27 @@ function initSorting() {
             const sortType = button.dataset.sort;
             console.log('排序方式:', sortType);
 
+            // 重置到第一页
+            currentPage = 1;
+            currentSortType = sortType;
+            currentSearchKeyword = ''; // 清除搜索状态
+            
+            // 恢复标题为正常状态
+            updateSectionTitle('热门话题');
+
             // 调用 API 重新获取话题列表
-            await loadTopics(sortType);
+            await loadTopics(sortType, currentPage, pageSize);
         });
     });
     
     // 页面加载时默认加载热门话题
-    loadTopics('hot');
+    currentSortType = 'hot';
+    currentSearchKeyword = '';
+    loadTopics('hot', 1, pageSize);
 }
 
 // 加载话题列表
-async function loadTopics(sortType = 'hot', page = 1, pageSize = 10) {
+async function loadTopics(sortType = 'hot', page = 1, pageSize = 8) {
     const container = document.querySelector('.topics-grid');
     
     // 显示加载状态
@@ -392,17 +424,26 @@ async function loadTopics(sortType = 'hot', page = 1, pageSize = 10) {
     try {
         const response = await getTopics({ sort: sortType, page, page_size: pageSize });
         const topics = response.data.topics;
+        const total = response.data.total || 0;
+        
+        // 计算总页数
+        totalPages = Math.ceil(total / pageSize);
+        if (totalPages === 0) totalPages = 1;
         
         if (!topics || topics.length === 0) {
             container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #999;">暂无话题</div>';
+            updatePaginationUI();
             return;
         }
         
         // 更新标题为正常状态
         updateSectionTitle('热门话题');
         
-        // 渲染话题列表
-        renderTopics(topics, page === 1);
+        // 渲染话题列表 - 每次都清空
+        renderTopics(topics, true);
+        
+        // 更新分页UI
+        updatePaginationUI();
         
     } catch (error) {
         console.error('加载话题失败:', error);
@@ -424,23 +465,34 @@ async function performSearch(keyword) {
     // 清除排序按钮的选中状态
     document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
     
+    // 重置分页状态
+    currentPage = 1;
+    currentSortType = 'search';
+    currentSearchKeyword = keyword;
+    
     try {
         const response = await searchTopics({
             keyword: keyword,
-            page: 1,
-            page_size: 20
+            page: currentPage,
+            page_size: pageSize
         });
         
         const searchResult = response.data;
+        const total = searchResult.total || 0;
+        
+        // 计算总页数
+        totalPages = Math.ceil(total / pageSize);
+        if (totalPages === 0) totalPages = 1;
         
         if (!searchResult || !searchResult.topics || searchResult.topics.length === 0) {
             container.innerHTML = `
                 <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                    <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
-                    <div style="font-size: 18px; color: #999; margin-bottom: 10px;">未找到相关话题</div>
-                    <div style="font-size: 14px; color: #ccc;">试试其他关键词吧</div>
+                    <div style="font-size: 64px; margin-bottom: 20px;">🤷‍♂️</div>
+                    <div style="font-size: 20px; color: #3d0000; font-weight: 900; margin-bottom: 10px; font-family: Impact, sans-serif;">没找到匹配的话题</div>
+                    <div style="font-size: 14px; color: #666; font-weight: 600;">换个关键词试试？</div>
                 </div>
             `;
+            updatePaginationUI();
             return;
         }
         
@@ -451,10 +503,14 @@ async function performSearch(keyword) {
         // 渲染搜索结果
         renderTopics(searchResult.topics, true);
         
+        // 更新分页UI
+        updatePaginationUI();
+        
     } catch (error) {
         console.error('搜索失败:', error);
         container.innerHTML = '<div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #f44336;">搜索失败，请稍后重试</div>';
         showMessage('搜索失败', 'error');
+        updatePaginationUI();
     }
 }
 
@@ -630,6 +686,69 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ========== 分页功能 ==========
+function initPagination() {
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', async () => {
+            if (currentPage > 1) {
+                currentPage--;
+                if (currentSortType === 'search') {
+                    const response = await searchTopics({ keyword: currentSearchKeyword, page: currentPage, page_size: pageSize });
+                    const container = document.querySelector('.topics-grid');
+                    container.innerHTML = ''; // 清空
+                    renderTopics(response.data.topics, true);
+                    updatePaginationUI();
+                } else {
+                    await loadTopics(currentSortType, currentPage, pageSize);
+                }
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', async () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                if (currentSortType === 'search') {
+                    const response = await searchTopics({ keyword: currentSearchKeyword, page: currentPage, page_size: pageSize });
+                    const container = document.querySelector('.topics-grid');
+                    container.innerHTML = ''; // 清空
+                    renderTopics(response.data.topics, true);
+                    updatePaginationUI();
+                } else {
+                    await loadTopics(currentSortType, currentPage, pageSize);
+                }
+            }
+        });
+    }
+}
+
+function updatePaginationUI() {
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const currentPageSpan = document.getElementById('current-page');
+    const totalPagesSpan = document.getElementById('total-pages');
+    
+    // 更新页码显示
+    if (currentPageSpan) {
+        currentPageSpan.textContent = currentPage;
+    }
+    if (totalPagesSpan) {
+        totalPagesSpan.textContent = totalPages;
+    }
+    
+    // 更新按钮状态
+    if (prevBtn) {
+        prevBtn.disabled = currentPage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentPage >= totalPages;
+    }
 }
 
 // ========== 开发环境日志 ==========

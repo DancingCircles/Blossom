@@ -1,29 +1,29 @@
-/* 额外的平滑滚动优化 */
+/* 平滑滚动和滚动条样式 - 复古海报风格 */
 
 /* 自定义滚动条 */
 ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--bg-medium);
+    border-left: 3px solid var(--deep-red);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 6px;
-    transition: background 0.3s ease;
+    background: var(--primary-red);
+    border: 3px solid var(--bg-medium);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: var(--deep-red);
 }
 
 /* Firefox 滚动条 */
 * {
     scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
+    scrollbar-color: var(--primary-red) var(--bg-medium);
 }
 
 /* 减少动画卡顿 */
@@ -43,4 +43,3 @@
         transition-duration: 0.01ms !important;
     }
 }
-

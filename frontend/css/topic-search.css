@@ -1,87 +1,54 @@
-/* 话题区域搜索框样式 */
+/* 话题搜索框 - 复古海报风格 */
+
 .topic-search-box {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    border: 3px solid var(--secondary-black);
-    border-radius: 50px;
-    padding: 12px 24px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    align-items: stretch;
+    gap: 0;
+    background: var(--bg-light);
+    border: 3px solid var(--deep-red);
+    padding: 0;
     flex: 1;
-    max-width: 500px;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-.topic-search-box:focus-within {
-    border-color: var(--primary-blue);
-    box-shadow: 6px 6px 0 var(--primary-blue);
-    transform: translate(-2px, -2px);
-}
-
-.topic-search-box::before {
-    content: '🔍';
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    opacity: 0.6;
-    animation: search-pulse 2s ease-in-out infinite;
-}
-
-@keyframes search-pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
+    max-width: 400px;
 }
 
 .topic-search-input {
     flex: 1;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--text-dark);
     background: transparent;
-    font-weight: 500;
-    padding: 4px 0;
+    font-weight: 600;
+    padding: 12px 20px;
+    font-family: 'Arial', sans-serif;
 }
 
 .topic-search-input::placeholder {
-    color: #999;
-    font-weight: 400;
+    color: var(--text-dark);
+    opacity: 0.5;
+    font-weight: 500;
 }
 
 .topic-search-btn {
-    background: var(--secondary-black);
+    background: var(--deep-red);
     border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-left: 3px solid var(--deep-red);
+    padding: 12px 24px;
+    color: var(--text-light);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    letter-spacing: 1px;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .topic-search-btn:hover {
-    background: var(--primary-blue);
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 20px rgba(91, 159, 237, 0.4);
-}
-
-.topic-search-btn:active {
-    transform: scale(0.95) rotate(0deg);
+    background: var(--primary-red);
 }
 
 .topic-search-btn .search-icon {
-    stroke: white;
-    stroke-width: 3;
+    display: none; /* 使用文字代替图标 */
 }
 
 /* 响应式调整 */
@@ -101,5 +68,3 @@
         order: 3;
     }
 }
-
-

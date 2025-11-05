@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/olivere/elastic/v7"
 	"go.uber.org/zap"
@@ -38,19 +37,23 @@ func SearchTopics(req *SearchRequest) (*SearchResponse, error) {
 
 	// 关键词搜索（标题和内容）
 	if req.Keyword != "" {
-		// 使用query_string查询，支持通配符和部分匹配
-		// 自动添加通配符支持部分匹配
-		queryString := "*" + strings.ToLower(req.Keyword) + "*"
+		// 使用multi_match查询，同时支持中英文
+		multiMatch := elastic.NewMultiMatchQuery(req.Keyword, "title", "content").
+			Type("phrase"). // 短语匹配
+			Slop(10)        // 允许词之间有间隔
 
-		queryStringQuery := elastic.NewQueryStringQuery(queryString).
-			Field("title").
-			Field("content").
-			DefaultOperator("OR").
-			AnalyzeWildcard(true).      // 分析通配符
-			AllowLeadingWildcard(true). // 允许前导通配符
-			Fuzziness("AUTO")           // 模糊匹配
+		// 同时添加wildcard查询作为备选（适合英文部分匹配）
+		titleWildcard := elastic.NewWildcardQuery("title", "*"+req.Keyword+"*")
+		contentWildcard := elastic.NewWildcardQuery("content", "*"+req.Keyword+"*")
 
-		boolQuery = boolQuery.Must(queryStringQuery)
+		// OR关系：任意一种匹配方式成功即可
+		shouldQuery := elastic.NewBoolQuery().
+			Should(multiMatch).
+			Should(titleWildcard).
+			Should(contentWildcard).
+			MinimumShouldMatch("1")
+
+		boolQuery = boolQuery.Must(shouldQuery)
 	}
 
 	// 分类筛选
