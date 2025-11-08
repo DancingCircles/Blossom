@@ -1,52 +1,65 @@
-# Bullbell - 高性能论坛平台
+# Bullbell - Go 语言高性能论坛系统
 
-[![Go CI/CD](https://github.com/DancingCircles/Blossom/actions/workflows/go.yml/badge.svg)](https://github.com/DancingCircles/Blossom/actions/workflows/go.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go)](https://golang.org/)
-[![GitHub stars](https://img.shields.io/github/stars/DancingCircles/Blossom?style=social)](https://github.com/DancingCircles/Blossom/stargazers)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> 一个生产级的 Go 论坛平台，支持高并发访问和现代化架构设计
+> 基于 Go + Gin + MySQL + Redis + Elasticsearch + Kafka + Canal 的现代化论坛平台
 
 ## 项目简介
 
-Bullbell 是一个现代化、高性能的论坛平台，专为可扩展性和可靠性而设计。采用 Go 语言和现代 Web 技术构建，展示了专业级的软件工程实践，包括清晰的分层架构、全面的测试覆盖和生产就绪的部署策略。
+Bullbell 是一个功能完整的高性能论坛系统，采用 Go 语言开发。项目从零开始构建，实现了用户认证、内容发布、评论互动、全文搜索、热度排行等核心功能，并通过 Redis 缓存、分布式锁、定时任务等技术手段进行了性能优化。
+
+**适合人群**：适合作为 Go 语言学习项目、校招简历项目或毕业设计。
+
+## 项目亮点（写在简历上）
+
+1. **完整的三层架构**：Controller-Logic-DAO 分层清晰，代码结构规范，易于维护和扩展
+2. **数据一致性方案**：基于 Canal + Kafka 实现 MySQL 到 Elasticsearch 的实时数据同步，保证最终一致性
+3. **分布式技术应用**：实现了基于 Redis 的分布式锁，使用 Snowflake 算法生成分布式 ID
+4. **可观测性体系**：集成 Prometheus + Grafana 监控系统，实时监控 QPS、延迟、错误率等核心指标
+5. **工程化能力**：Docker Compose 一键部署、Swagger API 文档、单元测试、CI/CD 自动化
+6. **技术栈丰富**：涵盖 MySQL、Redis、Elasticsearch、Kafka、Canal 等主流技术，熟悉各组件的应用场景
 
 ## 核心亮点
 
 | 维度 | 说明 |
 |------|------|
-| **架构设计** | 三层架构（Controller-Logic-DAO），职责分离清晰 |
-| **性能表现** | 轻量级接口 9,000+ QPS，数据库查询接口 3,800+ QPS |
-| **技术栈** | Go 1.21+ / Gin / MySQL 8.0 / Redis 7 / Elasticsearch 8.11 |
-| **安全机制** | JWT 认证、令牌桶限流、CORS 跨域保护 |
-| **工程化** | Docker 容器化、CI/CD 流水线、自动化测试、API 文档 |
-| **可扩展性** | Snowflake ID 生成、Redis 缓存、连接池、分布式友好设计 |
+| **架构设计** | 标准三层架构（Controller-Logic-DAO），代码结构清晰 |
+| **数据一致性** | Canal + Kafka 实现 MySQL 到 ES 的实时同步，保证最终一致性 |
+| **技术栈** | Go 1.21 + Gin + MySQL 8.0 + Redis 7 + Elasticsearch 8.11 + Kafka + Canal |
+| **可观测性** | Prometheus + Grafana 监控体系，实时监控系统运行状态 |
+| **实用功能** | JWT 认证、令牌桶限流、分布式锁、热度算法、树形评论 |
+| **工程化** | Docker Compose 一键部署、Swagger 文档、单元测试、CI/CD 自动化 |
+| **代码质量** | 完整的错误处理、结构化日志、单元测试覆盖 |
 
 ## 功能特性
 
-### 用户管理
-- 基于 JWT 的身份认证和授权
-- bcrypt 密码加密
-- 用户注册和登录，带完整验证
+### 基础功能
+- 用户注册、登录（JWT 认证 + bcrypt 密码加密）
+- 话题发布、浏览、分类管理
+- 树形评论系统（支持多层级回复，默认折叠）
+- 点赞投票功能
+- 基于 Elasticsearch 的全文搜索（中英文混合）
 
-### 内容管理
-- 话题创建、编辑和管理
-- 层级评论系统
-- 投票和评分机制
-- 基于分类的内容组织
+### 性能优化
+- **Redis 缓存**：话题列表、热点数据缓存，Cache Aside 模式
+- **令牌桶限流**：防止恶意请求，保护系统稳定性
+- **数据库优化**：连接池调优、索引优化、慢查询分析
+- **异步处理**：Kafka 消息队列实现异步数据同步
 
-### 搜索与发现
-- 基于 Elasticsearch 的全文搜索
-- 搜索建议和自动补全
-- 热门话题排行
-- 分类统计信息
+### 进阶功能
+- **数据同步**：Canal 监听 MySQL binlog + Kafka 消息队列，实现数据实时同步到 Elasticsearch
+- **分布式锁**：基于 Redis SETNX + Lua 脚本，防止并发冲突
+- **热度排行榜**：Reddit 算法 + 定时任务 + Redis ZSet
+- **Snowflake ID 生成器**：支持分布式部署
+- **监控告警**：Prometheus 指标采集 + Grafana 可视化监控
+- **结构化日志**：JSON 格式，支持日志轮转
 
-### 性能与可靠性
-- Redis 缓存层，优化热点数据访问
-- 令牌桶限流（每 IP 每秒 100 请求，突发容量 200）
-- 结构化 JSON 日志
-- Panic 恢复中间件
-- 数据库连接池优化
+### 工程化实践
+- Docker Compose 一键部署
+- Swagger API 文档自动生成
+- 单元测试 + 压力测试
+- CI/CD 流水线（GitHub Actions）
 
 ## 界面展示
 
@@ -70,6 +83,9 @@ Bullbell 是一个现代化、高性能的论坛平台，专为可扩展性和�
 - **数据库**: MySQL 8.0，带连接池优化
 - **缓存**: Redis 7，用于会话和数据缓存
 - **搜索引擎**: Elasticsearch 8.11，实现全文检索
+- **消息队列**: Kafka，异步数据处理
+- **数据同步**: Canal，监听 MySQL binlog
+- **监控系统**: Prometheus + Grafana
 - **API 文档**: Swagger/OpenAPI
 - **ID 生成**: Snowflake 算法，支持分布式部署
 
@@ -86,20 +102,6 @@ Bullbell 是一个现代化、高性能的论坛平台，专为可扩展性和�
 - **测试**: 单元测试 + 竞态检测器
 - **日志**: 结构化 JSON 日志，支持轮转
 
-## 性能测试报告
-
-使用 go-wrk 在本地开发环境测试结果：
-
-| 端点类型 | QPS（请求/秒） | 平均响应时间 | P99 响应时间 | 错误率 |
-|---------|---------------|-------------|-------------|--------|
-| 健康检查 | 9,442 | 1.05ms | <1ms | 0% |
-| 话题列表（数据库+缓存） | 3,853 | 5.24ms | ~1.64ms | 0% |
-| 搜索（Elasticsearch） | 1,350 | 14.76ms | ~5.91ms | 0% |
-
-**测试配置**: 100 并发连接，持续 10 秒，无限流
-
-详细的压力测试报告请查看：[压力测试报告.md](压力测试报告.md)
-
 ## 快速开始
 
 ### 环境要求
@@ -108,6 +110,7 @@ Bullbell 是一个现代化、高性能的论坛平台，专为可扩展性和�
 - MySQL 8.0
 - Redis 7.0+
 - Elasticsearch 8.11
+- Kafka 3.5+
 - Docker & Docker Compose（推荐）
 
 ### 使用 Docker Compose 部署（推荐）
@@ -127,6 +130,9 @@ docker-compose ps
 # 前端: http://localhost:80
 # 后端: http://localhost:8082
 # Swagger API 文档: http://localhost:8082/swagger/index.html
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3000 (默认账号密码: admin/admin)
+# Kafka UI: http://localhost:8080
 ```
 
 ### 本地开发部署
@@ -152,7 +158,20 @@ docker run -d --name elasticsearch \
   -e "xpack.security.enabled=false" \
   -p 9200:9200 \
   elasticsearch:8.11.0
+
+# 启动 Zookeeper
+docker run -d --name zookeeper \
+  -p 2181:2181 \
+  confluentinc/cp-zookeeper:7.5.0
+
+# 启动 Kafka
+docker run -d --name kafka \
+  -p 9092:9092 \
+  -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+  confluentinc/cp-kafka:7.5.0
 ```
+
+> **提示**：本地开发推荐直接使用 `docker-compose up -d`，会自动启动所有依赖服务
 
 #### 2. 初始化数据库
 
@@ -224,6 +243,16 @@ Bullbell/
 ├── .github/
 │   └── workflows/
 │       └── go.yml              # CI/CD 配置
+├── canal/                      # Canal 配置
+│   └── init.sql                # Canal 用户初始化脚本
+├── prometheus/                 # Prometheus 配置
+│   └── prometheus.yml          # Prometheus 配置文件
+├── grafana/                    # Grafana 配置
+│   ├── provisioning/           # 自动配置
+│   │   ├── datasources/        # 数据源配置
+│   │   └── dashboards/         # 仪表板配置
+│   └── dashboards/             # 监控面板 JSON
+│       └── bullbell-overview.json  # 系统概览面板
 ├── frontend/                   # 前端代码
 │   ├── css/                    # 样式文件
 │   │   ├── style.css          # 主样式（含毛玻璃导航栏）
@@ -248,6 +277,8 @@ Bullbell/
 │   │   ├── search.go          # 搜索控制器
 │   │   ├── topic.go           # 话题控制器
 │   │   └── user.go            # 用户控制器
+│   ├── consumers/              # Kafka 消费者
+│   │   └── es_consumer.go     # ES 同步消费者
 │   ├── dao/                    # 数据访问层
 │   │   ├── mysql/             # MySQL 操作
 │   │   ├── redis/             # Redis 操作
@@ -266,13 +297,18 @@ Bullbell/
 │   ├── middleware/             # 中间件
 │   │   ├── cors.go            # CORS 跨域
 │   │   ├── jwt.go             # JWT 认证
-│   │   └── rate_limit.go      # 令牌桶限流
+│   │   ├── rate_limit.go      # 令牌桶限流
+│   │   └── metrics.go         # Prometheus 指标
 │   ├── routes/                 # 路由配置
 │   │   └── routes.go          # 路由定义
 │   ├── utils/                  # 工具函数
 │   │   ├── jwt.go             # JWT 工具
 │   │   ├── password.go        # 密码工具
-│   │   └── snowflake.go       # ID 生成
+│   │   ├── snowflake.go       # ID 生成
+│   │   ├── distributed_lock.go # 分布式锁
+│   │   └── hot_score.go       # 热度计算
+│   ├── tasks/                  # 定时任务
+│   │   └── hot_ranking.go     # 热度排名任务
 │   ├── logger/                 # 日志系统
 │   ├── settings/               # 配置管理
 │   ├── docs/                   # Swagger 文档
@@ -283,13 +319,10 @@ Bullbell/
 │   ├── config.yaml             # 配置文件
 │   └── main.go                 # 入口文件
 ├── docs/                       # 文档目录
-│   ├── CONTRIBUTING.md         # 贡献指南
-│   ├── DOCKER_README.md        # Docker 说明
-│   ├── IMPLEMENTATION_SUMMARY.md # 实现总结
-│   └── FRONTEND_README.md      # 前端说明
+│   └── DISTRIBUTED_LOCK.md     # 分布式锁文档
 ├── docker-compose.yml          # Docker Compose 配置
 ├── Makefile                    # Make 命令
-├── 压力测试报告.md              # 性能测试报告
+├── 面试问答手册.md              # 面试问题手册
 └── README.md                   # 本文档
 ```
 
@@ -325,6 +358,8 @@ go tool cover -html=coverage.out
 
 ### 压力测试
 
+项目使用 go-wrk 进行性能测试：
+
 ```bash
 # 安装 go-wrk
 go install github.com/tsliwowicz/go-wrk@latest
@@ -333,11 +368,16 @@ go install github.com/tsliwowicz/go-wrk@latest
 go-wrk -c 100 -d 10 http://localhost:8082/ping
 
 # 测试话题列表
-go-wrk -c 50 -d 10 http://localhost:8082/api/v1/topics
+go-wrk -c 100 -d 10 http://localhost:8082/api/v1/topics
 
 # 测试搜索
-go-wrk -c 20 -d 10 "http://localhost:8082/api/v1/search?q=test"
+go-wrk -c 50 -d 10 "http://localhost:8082/api/v1/search?keyword=test"
 ```
+
+**测试要点**：
+- 建议在加载测试数据后进行压测
+- 观察 Prometheus 和 Grafana 中的实时监控指标
+- 关注 Kafka 消费延迟情况
 
 ### 生成 Swagger 文档
 
@@ -377,94 +417,92 @@ swag init
 - `POST /api/v1/topics/:id/comments` - 发表评论
 - `DELETE /api/v1/comments/:id` - 删除评论
 
-## 核心功能实现
+## 技术实现细节
 
-### 令牌桶限流算法
+### 1. Canal + Kafka 数据同步
+**架构流程**：
+```
+MySQL binlog → Canal Server → Kafka → Consumer → Elasticsearch
+```
 
-使用 `golang.org/x/time/rate` 实现基于 IP 的令牌桶限流：
+**核心特性**：
+- Canal 监听 MySQL binlog，捕获数据变更
+- Kafka 消息队列保证消息可靠传输
+- 消费者实现幂等性消费，防止数据重复
+- 代码位置：`web_app/consumers/es_consumer.go`
 
-- 每个 IP 独立限流器
-- 每秒生成 100 个令牌
-- 桶容量 200（支持突发流量）
+**数据一致性保证**：
+- 使用文档 ID 作为 ES 主键，天然幂等
+- Canal 支持断点续传，不会丢失数据
+- Kafka offset 管理保证消息不重复消费
+
+### 2. Prometheus + Grafana 监控
+**监控指标**：
+- HTTP 请求总数（按方法、路径、状态码分组）
+- 请求延迟直方图（P50/P95/P99）
+- 正在处理的请求数
+- 错误率统计
+
+**配置文件**：
+- Prometheus: `prometheus/prometheus.yml`
+- Grafana: `grafana/provisioning/`
+- 监控面板: `grafana/dashboards/`
+- 代码位置：`web_app/middleware/metrics.go`
+
+### 3. 令牌桶限流算法
+使用 Go 官方库 `golang.org/x/time/rate` 实现：
+- 每 IP 独立限流器（100 req/s，burst 200）
 - 超限返回 429 状态码
+- 代码位置：`web_app/middleware/rate_limit.go`
 
-详见：`web_app/middleware/rate_limit.go`
+### 4. Redis 缓存策略
+- 话题列表：5 分钟 TTL
+- 热门话题：10 分钟 TTL
+- Cache Aside 模式：读取时缓存，更新时删除
+- 代码位置：`web_app/dao/redis/`
 
-### Snowflake ID 生成
+### 5. 分布式锁实现
+- Redis SETNX 命令 + UUID 唯一标识
+- Lua 脚本保证原子性解锁
+- 应用场景：防止投票重复、并发冲突
+- 代码位置：`web_app/utils/distributed_lock.go`
 
-采用 Twitter Snowflake 算法生成全局唯一 ID：
+### 6. 热度排行算法
+- Reddit 算法：score = votes / (hours + 2)^1.8
+- 定时任务每 5 分钟更新一次
+- 使用 Redis ZSet 存储排行榜
+- 代码位置：`web_app/tasks/hot_ranking.go`
 
-- 64 位整数
-- 支持分布式部署
-- 时间有序
-- 高性能（百万级 QPS）
-
-详见：`web_app/utils/snowflake.go`
-
-### Redis 缓存策略
-
-- 话题列表缓存（TTL: 5 分钟）
-- 热门话题缓存（TTL: 10 分钟）
-- 用户会话缓存
-- 缓存失效自动重建
-
-详见：`web_app/dao/redis/`
-
-### Elasticsearch 全文搜索
-
-- 实时索引更新
-- 分词搜索支持
-- 高亮显示
-- 搜索建议
-
-详见：`web_app/dao/elasticsearch/`
+### 7. Snowflake ID 生成
+- 64 位长整型，包含时间戳、机器ID、序列号
+- 支持分布式部署，避免 ID 冲突
+- 代码位置：`web_app/utils/snowflake.go`
 
 ## 前端特色
 
-### 毛玻璃导航栏
-- 半透明背景（70% 不透明度）
-- backdrop-filter 毛玻璃效果
-- 向下滚动自动隐藏
-- 向上滚动自动显示
-- 滚动到顶部完全透明
+- 毛玻璃导航栏：半透明背景 + backdrop-filter 效果
+- 响应式设计：支持移动端和桌面端
+- 滚动优化：导航栏自动隐藏/显示
+- 流畅动画：页面切换和交互动画
 
-### 响应式设计
-- 移动端适配
-- 流畅的动画过渡
-- 懒加载优化
-- 骨架屏加载
+## 生产环境建议
 
-## 部署建议
+如果要部署到生产环境，建议做以下调整：
 
-### 生产环境配置
+1. **安全加固**
+   - 修改 CORS 为具体域名（不要用 *）
+   - 启用 HTTPS
+   - 修改默认密码和密钥
 
-1. **修改 CORS 配置**
-```go
-// web_app/middleware/cors.go
-// 将 * 改为具体域名
-c.Writer.Header().Set("Access-Control-Allow-Origin", "https://yourdomain.com")
-```
+2. **性能调优**
+   - 根据服务器配置调整限流参数
+   - 配置数据库主从复制
+   - 启用慢查询日志
 
-2. **调整限流参数**
-```go
-// web_app/routes/routes.go
-// 根据实际需求调整
-middleware.IPRateLimit(500, 1000)
-```
-
-3. **启用 HTTPS**
-- 配置 SSL 证书
-- 强制 HTTPS 重定向
-
-4. **数据库优化**
-- 配置主从复制
-- 启用慢查询日志
-- 定期备份
-
-5. **监控告警**
-- 接入 Prometheus
-- 配置 Grafana 面板
-- 设置告警规则
+3. **监控告警**
+   - 接入 Prometheus + Grafana
+   - 配置日志收集
+   - 设置告警规则
 
 ## 贡献指南
 
@@ -480,10 +518,8 @@ middleware.IPRateLimit(500, 1000)
 
 ## 相关文档
 
-- [实现总结](docs/IMPLEMENTATION_SUMMARY.md) - 详细的技术实现说明
-- [Docker 部署](docs/DOCKER_README.md) - Docker 容器化部署指南
-- [前端说明](docs/FRONTEND_README.md) - 前端技术详解
-- [压力测试报告](压力测试报告.md) - 完整的性能测试数据
+- [面试问答手册](面试问答手册.md) - 项目常见面试问题及回答技巧
+- [分布式锁文档](docs/DISTRIBUTED_LOCK.md) - 分布式锁实现细节
 
 ## 许可证
 
@@ -492,10 +528,6 @@ middleware.IPRateLimit(500, 1000)
 ## 作者
 
 项目维护者: [@DancingCircles](https://github.com/DancingCircles)
-
-## 致谢
-
-感谢所有为这个项目做出贡献的开发者！
 
 ---
 

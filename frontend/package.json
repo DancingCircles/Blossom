@@ -4,9 +4,9 @@
   "description": "Blossom 创意论坛前端",
   "main": "index.html",
   "scripts": {
-    "dev": "npx live-server --port=3000 --host=localhost --open=index.html",
-    "start": "npx live-server --port=3000 --host=localhost --open=index.html",
-    "serve": "npx http-server -p 3000 -o"
+    "dev": "npx live-server --port=8080 --host=localhost --open=index.html",
+    "start": "npx live-server --port=8080 --host=localhost --open=index.html",
+    "serve": "npx http-server -p 8080 -o"
   },
   "keywords": [
     "forum",

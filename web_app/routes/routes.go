@@ -9,6 +9,7 @@ import (
 	"web_app/middleware"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -20,10 +21,11 @@ func SetupRouter() *gin.Engine {
 
 	// ========== 全局中间件 ==========
 	r.Use(
-		logger.GinLogger(),               // 日志中间件
-		logger.GinRecovery(true),         // 恢复中间件（panic恢复）
-		middleware.CORS(),                // 跨域中间件
-		middleware.IPRateLimit(100, 200), // IP限流：每秒100个请求，桶容量200
+		logger.GinLogger(),             // 日志中间件
+		logger.GinRecovery(true),       // 恢复中间件（panic恢复）
+		middleware.CORS(),              // 跨域中间件
+		middleware.PrometheusMetrics(), // Prometheus指标采集
+		//middleware.IPRateLimit(500, 1000), // IP限流：每秒500个请求，桶容量1000 (根据压测优化)
 	)
 
 	// ========== 健康检查接口 ==========
@@ -34,6 +36,9 @@ func SetupRouter() *gin.Engine {
 			"service": "Blossom Forum",
 		})
 	})
+
+	// ========== Prometheus指标端点 ==========
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	// ========== Swagger API文档 ==========
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -57,6 +62,7 @@ func SetupRouter() *gin.Engine {
 
 			// 话题列表（无需登录也可以查看）
 			v1.GET("/topics", topicCtrl.GetTopics)                  // 获取话题列表
+			v1.GET("/topics/hot", topicCtrl.GetHotTopics)           // 获取热门话题
 			v1.GET("/topics/:id", topicCtrl.GetTopicByID)           // 获取话题详情
 			v1.GET("/topics/:id/comments", commentCtrl.GetComments) // 获取话题评论列表
 

@@ -70,11 +70,31 @@ func createIndex(ctx context.Context) error {
 		return nil
 	}
 
-	// 定义索引mapping
+	// 定义索引mapping（优化中文搜索）
 	mapping := `{
 		"settings": {
 			"number_of_shards": 1,
-			"number_of_replicas": 0
+			"number_of_replicas": 0,
+			"analysis": {
+				"analyzer": {
+					"default": {
+						"type": "standard"
+					},
+					"ngram_analyzer": {
+						"type": "custom",
+						"tokenizer": "ngram_tokenizer",
+						"filter": ["lowercase"]
+					}
+				},
+				"tokenizer": {
+					"ngram_tokenizer": {
+						"type": "ngram",
+						"min_gram": 2,
+						"max_gram": 3,
+						"token_chars": ["letter", "digit"]
+					}
+				}
+			}
 		},
 		"mappings": {
 			"properties": {
@@ -86,6 +106,8 @@ func createIndex(ctx context.Context) error {
 				},
 				"title": {
 					"type": "text",
+					"analyzer": "ngram_analyzer",
+					"search_analyzer": "standard",
 					"fields": {
 						"keyword": {
 							"type": "keyword",
@@ -94,7 +116,9 @@ func createIndex(ctx context.Context) error {
 					}
 				},
 				"content": {
-					"type": "text"
+					"type": "text",
+					"analyzer": "ngram_analyzer",
+					"search_analyzer": "standard"
 				},
 				"category": {
 					"type": "keyword"

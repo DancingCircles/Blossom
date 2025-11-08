@@ -171,6 +171,13 @@ async function deleteComment(commentId) {
     });
 }
 
+// ========== 热榜相关 API ==========
+
+// 获取热门话题
+async function getHotTopics(limit = 20) {
+    return apiRequest(`/topics/hot?limit=${limit}`);
+}
+
 // ========== 工具函数 ==========
 
 // 显示提示消息

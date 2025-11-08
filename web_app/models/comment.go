@@ -20,7 +20,7 @@ type Comment struct {
 // CreateCommentRequest 创建评论请求参数
 type CreateCommentRequest struct {
 	Content  string `json:"content" binding:"required,min=1,max=1000"` // 评论内容：1-1000个字符
-	ParentID *int64 `json:"parent_id"`                                 // 父评论ID（可选，用于回复）
+	ParentID *int64 `json:"parent_id,string,omitempty"`                // 父评论ID（可选，用于回复）
 }
 
 // CommentListResponse 评论列表响应

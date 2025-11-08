@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"web_app/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
 // InsertTopic 插入话题
@@ -153,4 +155,50 @@ func UpdateTopicDislikeCount(topicID int64, delta int) error {
 	sqlStr := "UPDATE topics SET dislike_count = dislike_count + ? WHERE id = ?"
 	_, err := db.Exec(sqlStr, delta, topicID)
 	return err
+}
+
+// GetRecentTopics 获取最近的话题列表（用于热度排名计算）
+func GetRecentTopics(limit int) ([]*models.Topic, error) {
+	sqlStr := `SELECT t.id, t.user_id, u.username, t.title, t.content, t.category, 
+	                  t.like_count, t.dislike_count, t.comment_count, t.view_count,
+	                  t.created_at, t.updated_at
+	           FROM topics t
+	           LEFT JOIN users u ON t.user_id = u.id
+	           ORDER BY t.created_at DESC
+	           LIMIT ?`
+
+	var topics []*models.Topic
+	err := db.Select(&topics, sqlStr, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	return topics, nil
+}
+
+// GetTopicsByIDs 根据ID列表批量获取话题
+func GetTopicsByIDs(ids []int64) ([]*models.Topic, error) {
+	if len(ids) == 0 {
+		return []*models.Topic{}, nil
+	}
+
+	// 构建IN查询
+	query, args, err := sqlx.In(`SELECT t.id, t.user_id, u.username, t.title, t.content, t.category,
+	                                    t.like_count, t.dislike_count, t.comment_count, t.view_count,
+	                                    t.created_at, t.updated_at
+	                             FROM topics t
+	                             LEFT JOIN users u ON t.user_id = u.id
+	                             WHERE t.id IN (?)`, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	query = db.Rebind(query)
+	var topics []*models.Topic
+	err = db.Select(&topics, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return topics, nil
 }

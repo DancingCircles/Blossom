@@ -206,3 +206,37 @@ func (tc *TopicController) VoteTopic(c *gin.Context) {
 		"type":    voteType,
 	}))
 }
+
+// GetHotTopics 获取热门话题
+// @Summary 获取热门话题
+// @Description 获取热度排行榜
+// @Tags 话题
+// @Produce json
+// @Param limit query int false "返回数量" default(20)
+// @Success 200 {object} models.Response{data=[]models.Topic}
+// @Router /api/v1/topics/hot [get]
+func (tc *TopicController) GetHotTopics(c *gin.Context) {
+	// 1. 获取limit参数
+	limitStr := c.DefaultQuery("limit", "20")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 20
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	// 2. 调用逻辑层获取热门话题
+	topics, err := logic.GetHotTopics(limit)
+	if err != nil {
+		zap.L().Error("获取热门话题失败", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, models.NewErrorResponse(models.CodeServerError, "获取热门话题失败"))
+		return
+	}
+
+	// 3. 返回成功响应
+	c.JSON(http.StatusOK, models.NewSuccessResponse(gin.H{
+		"topics": topics,
+		"total":  len(topics),
+	}))
+}

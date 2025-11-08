@@ -17,6 +17,7 @@ type Config struct {
 	MySQL *MysqlConfig `mapstructure:"mysql"`
 	Redis *RedisConfig `mapstructure:"redis"`
 	Log   *LogConfig   `mapstructure:"log"`
+	Kafka *KafkaConfig `mapstructure:"kafka"`
 }
 
 // AppConfig 应用配置
@@ -54,6 +55,13 @@ type LogConfig struct {
 	MaxBackups int    `mapstructure:"max_backups"`
 	MaxAge     int    `mapstructure:"max_age"`
 	Compress   bool   `mapstructure:"compress"`
+}
+
+// KafkaConfig Kafka配置
+type KafkaConfig struct {
+	Brokers []string `mapstructure:"brokers"`
+	Topic   string   `mapstructure:"topic"`
+	GroupID string   `mapstructure:"group_id"`
 }
 
 // Init 初始化配置系统

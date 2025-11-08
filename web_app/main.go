@@ -10,12 +10,14 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"web_app/consumers"
 	"web_app/dao/elasticsearch"
 	"web_app/dao/mysql"
 	"web_app/dao/redis"
 	"web_app/logger"
 	"web_app/routes"
 	"web_app/settings"
+	"web_app/tasks"
 	"web_app/utils"
 
 	_ "net/http/pprof" // 性能监控
@@ -85,6 +87,19 @@ func main() {
 	}
 	defer elasticsearch.Close()
 	zap.L().Debug("Elasticsearch初始化成功...")
+
+	// 启动热度排名定时任务
+	tasks.StartHotRankingTask()
+
+	// 启动Kafka消费者（ES同步）
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				zap.L().Error("Kafka消费者panic", zap.Any("error", err))
+			}
+		}()
+		consumers.StartESConsumer()
+	}()
 
 	// 启动pprof性能监控服务（仅开发环境）
 	if viper.GetString("app.mode") == "dev" {

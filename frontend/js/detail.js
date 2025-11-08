@@ -162,7 +162,7 @@ async function loadComments(page = 1) {
     const container = document.getElementById('comments-list');
     
     try {
-        const response = await getComments(currentTopicId, { page, page_size: 20 });
+        const response = await getComments(currentTopicId, { page, page_size: 100 });
         const data = response.data;
         
         // 更新评论数量
@@ -175,8 +175,12 @@ async function loadComments(page = 1) {
         
         // 渲染评论
         if (data.comments && data.comments.length > 0) {
-            data.comments.forEach(comment => {
-                container.appendChild(renderComment(comment));
+            // 构建评论树
+            const commentTree = buildCommentTree(data.comments);
+            
+            // 渲染每个顶级评论及其回复
+            commentTree.forEach(comment => {
+                container.appendChild(renderCommentTree(comment));
             });
         } else if (page === 1) {
             container.innerHTML = '<div class="empty-state">还没有评论，快来抢沙发吧！</div>';
@@ -210,42 +214,6 @@ async function loadComments(page = 1) {
             showMessage('加载失败：' + error.message, 'error');
         }
     }
-}
-
-// 渲染单个评论
-function renderComment(comment) {
-    const div = document.createElement('div');
-    div.className = 'comment-item';
-    div.dataset.commentId = comment.id;
-    
-    const currentUserId = localStorage.getItem('user_id');
-    const isAuthor = currentUserId && String(comment.user_id) === String(currentUserId);
-    
-    div.innerHTML = `
-        <div class="comment-avatar">👤</div>
-        <div class="comment-body">
-            <div class="comment-header">
-                <div class="comment-user">
-                    <span class="comment-username">${escapeHtml(comment.username || '匿名用户')}</span>
-                </div>
-                <span class="comment-time">${formatTime(comment.created_at)}</span>
-            </div>
-            <div class="comment-content">${escapeHtml(comment.content)}</div>
-            ${isAuthor ? `
-                <div class="comment-actions">
-                    <button class="btn-link delete-comment-btn" data-comment-id="${comment.id}">删除</button>
-                </div>
-            ` : ''}
-        </div>
-    `;
-    
-    // 绑定删除按钮事件
-    if (isAuthor) {
-        const deleteBtn = div.querySelector('.delete-comment-btn');
-        deleteBtn.addEventListener('click', () => handleDeleteComment(comment.id));
-    }
-    
-    return div;
 }
 
 // 初始化评论表单

@@ -35,3 +35,9 @@ elasticsearch:
   url: "http://127.0.0.1:9200"  # Elasticsearch地址
   index: "bullbell_topics"       # 索引名称
   sniff: false                   # 是否开启嗅探 (单节点设置为false)
+
+kafka:
+  brokers:
+    - "127.0.0.1:9092"           # Kafka broker地址
+  topic: "canal-topic"           # Canal 消息主题
+  group_id: "bullbell-consumer-group"  # 消费者组ID

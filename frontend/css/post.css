@@ -693,6 +693,7 @@ body {
 .comment-actions {
     display: flex;
     gap: 15px;
+    margin-top: 8px;
 }
 
 .btn-link {
@@ -710,6 +711,150 @@ body {
 .btn-link:hover {
     color: var(--deep-red);
     text-decoration: underline;
+}
+
+/* 评论树容器 - 抖音风格 */
+.comment-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.comment-wrapper:last-child {
+    margin-bottom: 0;
+}
+
+.replies-container {
+    margin-top: 5px; /* 回复紧贴父评论 */
+}
+
+/* 回复评论样式 */
+.reply-comment {
+    padding-left: 20px;
+    padding-top: 10px;
+    border-left: 3px solid var(--primary-red);
+    background: rgba(183, 28, 28, 0.02);
+    position: relative;
+}
+
+/* 连接线效果 */
+.reply-comment::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 0;
+    width: 3px;
+    height: 25px;
+    background: var(--primary-red);
+}
+
+/* 展开/收起按钮 */
+.toggle-replies-btn {
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--primary-red) !important;
+}
+
+.toggle-replies-btn:hover {
+    color: var(--dark-red) !important;
+}
+
+.toggle-text {
+    font-weight: 900;
+}
+
+.reply-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--primary-red);
+    color: var(--text-light);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 3px;
+    margin-left: 8px;
+}
+
+/* 回复输入框 */
+.reply-form-container {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid var(--deep-red);
+    border-radius: 0;
+}
+
+.reply-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--deep-red);
+    background: var(--text-light);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    font-weight: 500;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    box-shadow: 3px 3px 0 rgba(61, 0, 0, 0.1);
+}
+
+.reply-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.reply-char-count {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.btn-cancel-reply,
+.btn-submit-reply {
+    padding: 8px 20px;
+    border: 2px solid var(--deep-red);
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-family: 'Impact', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel-reply {
+    background: transparent;
+    color: var(--deep-red);
+}
+
+.btn-cancel-reply:hover {
+    background: #f5f5f5;
+}
+
+.btn-submit-reply {
+    background: var(--primary-red);
+    color: var(--text-light);
+    box-shadow: 2px 2px 0 rgba(61, 0, 0, 0.2);
+}
+
+.btn-submit-reply:hover {
+    background: var(--dark-red);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(61, 0, 0, 0.3);
+}
+
+.btn-submit-reply:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 #load-more-container {

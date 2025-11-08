@@ -182,6 +182,46 @@ func BulkIndexTopics(topics []*models.Topic) error {
 	return nil
 }
 
+// UpdateTopicCommentCount 更新话题的评论数
+func UpdateTopicCommentCount(topicID int64, commentCount int) error {
+	ctx := context.Background()
+
+	id := fmt.Sprintf("%d", topicID)
+
+	// 只更新评论数字段
+	doc := map[string]interface{}{
+		"comment_count": commentCount,
+	}
+
+	// 更新文档
+	_, err := client.Update().
+		Index(index).
+		Id(id).
+		Doc(doc).
+		Refresh("true").
+		Do(ctx)
+
+	if err != nil {
+		// 如果文档不存在，记录警告但不返回错误
+		if elastic.IsNotFound(err) {
+			zap.L().Warn("话题索引不存在，跳过更新评论数",
+				zap.String("topic_id", id),
+				zap.Int("comment_count", commentCount))
+			return nil
+		}
+		zap.L().Error("更新话题评论数失败",
+			zap.Error(err),
+			zap.String("topic_id", id),
+			zap.Int("comment_count", commentCount))
+		return err
+	}
+
+	zap.L().Debug("话题评论数已更新",
+		zap.String("topic_id", id),
+		zap.Int("comment_count", commentCount))
+	return nil
+}
+
 // GetTopicByID 从ES中获取话题（用于调试）
 func GetTopicByID(topicID int64) (*TopicDocument, error) {
 	ctx := context.Background()

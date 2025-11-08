@@ -37,23 +37,14 @@ func SearchTopics(req *SearchRequest) (*SearchResponse, error) {
 
 	// 关键词搜索（标题和内容）
 	if req.Keyword != "" {
-		// 使用multi_match查询，同时支持中英文
+		// 使用multi_match查询，支持中英文搜索
 		multiMatch := elastic.NewMultiMatchQuery(req.Keyword, "title", "content").
-			Type("phrase"). // 短语匹配
-			Slop(10)        // 允许词之间有间隔
+			Type("best_fields").      // 最佳字段匹配
+			TieBreaker(0.3).          // 多字段匹配时的权重
+			Operator("OR").           // OR 操作符：任意一个词匹配即可
+			MinimumShouldMatch("30%") // 至少匹配30%的词（对中文更友好）
 
-		// 同时添加wildcard查询作为备选（适合英文部分匹配）
-		titleWildcard := elastic.NewWildcardQuery("title", "*"+req.Keyword+"*")
-		contentWildcard := elastic.NewWildcardQuery("content", "*"+req.Keyword+"*")
-
-		// OR关系：任意一种匹配方式成功即可
-		shouldQuery := elastic.NewBoolQuery().
-			Should(multiMatch).
-			Should(titleWildcard).
-			Should(contentWildcard).
-			MinimumShouldMatch("1")
-
-		boolQuery = boolQuery.Must(shouldQuery)
+		boolQuery = boolQuery.Must(multiMatch)
 	}
 
 	// 分类筛选

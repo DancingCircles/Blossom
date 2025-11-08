@@ -114,6 +114,11 @@ func GetRedis() *redis.Client {
 	return rdb
 }
 
+// GetClient 获取 Redis 客户端实例（GetRedis的别名）
+func GetClient() *redis.Client {
+	return rdb
+}
+
 // Redis 使用最佳实践说明：
 //
 // 1. 连接池配置：
